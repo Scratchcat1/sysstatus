@@ -1,0 +1,43 @@
+{
+    "general_info": {
+        "load_avg": {
+            "default_colour": "Green",
+            "levels": [
+                {
+                    "min": 0.5,
+                    "colour": "Yellow"
+                },
+                {
+                    "min": 0.8,
+                    "colour": "Red"
+                }
+            ]
+        },
+        "free_memory": {
+            "default_colour": "Green",
+            "levels": [
+                {
+                    "min": 0.7,
+                    "colour": "Yellow"
+                },
+                {
+                    "min": 0.9,
+                    "colour": "Red"
+                }
+            ]
+        },
+        "cpu_frequency": {
+            "default_colour": "Green",
+            "levels": [
+                {
+                    "min": 2000,
+                    "colour": "Yellow"
+                },
+                {
+                    "min": 2400,
+                    "colour": "Red"
+                }
+            ]
+        }
+    }
+}
