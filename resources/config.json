@@ -39,5 +39,31 @@
                 }
             ]
         }
+    },
+    "storage_usage": {
+        "default_colour": "Green",
+        "levels": [
+            {
+                "min": 0.8,
+                "colour": "Yellow"
+            },
+            {
+                "min": 0.9,
+                "colour": "Red"
+            }
+        ]
+    },
+    "temperature": {
+        "default_colour": "Green",
+        "levels": [
+            {
+                "min": 70,
+                "colour": "Yellow"
+            },
+            {
+                "min": 85,
+                "colour": "Red"
+            }
+        ]
     }
 }

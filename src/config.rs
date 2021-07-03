@@ -4,6 +4,8 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct SysStatusConfig {
     pub general_info: GeneralInfoConfig,
+    pub storage_usage: ConditionalColour<f32>,
+    pub temperature: ConditionalColour<f32>,
 }
 
 #[derive(Debug, Deserialize)]

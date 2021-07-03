@@ -32,9 +32,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut sys = System::new();
 
     println!(
-        "{}\n{}",
-        components::general_info::general_info(&mut sys, &cfg.general_info),
-        components::disks::disks(&mut sys, &cfg.general_info)
+        "{}",
+        components::general_info::general_info(&mut sys, &cfg.general_info)
+    );
+    println!("{}", components::disks::disks(&mut sys, &cfg.storage_usage));
+    println!(
+        "{}",
+        components::temperature::temperature(&mut sys, &cfg.temperature)
     );
     Ok(())
 }

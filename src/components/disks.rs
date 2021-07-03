@@ -1,23 +1,16 @@
-use crate::config::GeneralInfoConfig;
+use crate::config::ConditionalColour;
 use crate::util::select_colour_number;
 use bytesize::ByteSize;
 use colored::*;
 use std::str;
-use sysinfo::ProcessorExt;
 use sysinfo::{Disk, DiskExt};
 use sysinfo::{System, SystemExt};
 
-pub fn format_disk(disk: &Disk, cfg: &GeneralInfoConfig) -> String {
+pub fn single_disk(disk: &Disk, cfg: &ConditionalColour<f32>) -> String {
     let used = ByteSize::b(disk.total_space() - disk.available_space());
-    let bar_width = 40;
-    let used_bar_width =
-        ((used.as_u64() as f32 / disk.total_space() as f32) * bar_width as f32) as usize;
-    // let utilised = format!(
-    //     "{} ({:.4}%) used out of {}",
-    //     used,
-    //     (used_ratio * 100.0).to_string(),
-    //     ByteSize::b(disk.total_space()),
-    // );
+    let bar_width = 60;
+    let used_ratio = used.as_u64() as f32 / disk.total_space() as f32;
+    let used_bar_width = (used_ratio * bar_width as f32) as usize;
 
     let file_system = match str::from_utf8(disk.file_system()) {
         Ok(v) => v,
@@ -25,7 +18,7 @@ pub fn format_disk(disk: &Disk, cfg: &GeneralInfoConfig) -> String {
     };
 
     format!(
-        "{:<8} {:#?} {:>5} {:>10} {:>10} \n[{}{}]",
+        "   {:<8} {:#?} {:>5} {:>10} {:>10} \n[{}{}]",
         disk.mount_point()
             .to_str()
             .expect("Failed to get disk name"),
@@ -33,16 +26,18 @@ pub fn format_disk(disk: &Disk, cfg: &GeneralInfoConfig) -> String {
         file_system,
         used,
         ByteSize::b(disk.total_space()),
-        "=".repeat(used_bar_width),
+        "=".repeat(used_bar_width)
+            .color(select_colour_number(used_ratio, cfg)),
         "=".repeat(bar_width - used_bar_width)
     )
 }
 
-pub fn disks(sys: &mut System, cfg: &GeneralInfoConfig) -> String {
+pub fn disks(sys: &mut System, cfg: &ConditionalColour<f32>) -> String {
     sys.refresh_disks_list();
-    println!("HI {}", sys.disks().len());
-    for disk in sys.disks() {
-        println!("{}", format_disk(&disk, cfg));
-    }
-    "".to_string()
+
+    sys.disks()
+        .iter()
+        .map(|disk| single_disk(&disk, cfg))
+        .collect::<Vec<String>>()
+        .join("\n")
 }
