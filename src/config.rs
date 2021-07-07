@@ -1,11 +1,13 @@
 use colored::Color;
 use serde::Deserialize;
+use std::collections::HashMap;
 
 #[derive(Debug, Deserialize)]
 pub struct SysStatusConfig {
     pub general_info: GeneralInfoConfig,
     pub storage_usage: ConditionalColour<f32>,
     pub temperature: ConditionalColour<f32>,
+    pub services: HashMap<String, ServiceConfig>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -13,6 +15,11 @@ pub struct GeneralInfoConfig {
     pub load_avg: ConditionalColour<f64>,
     pub free_memory: ConditionalColour<f32>,
     pub cpu_frequency: ConditionalColour<u64>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ServiceConfig {
+    pub memory_usage: Option<ConditionalColour<u64>>,
 }
 
 #[derive(Debug, Deserialize)]

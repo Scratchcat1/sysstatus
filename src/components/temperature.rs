@@ -5,17 +5,17 @@ use sysinfo::{Component, ComponentExt};
 use sysinfo::{System, SystemExt};
 
 pub fn single_sensor(
-    cmpt: &Component,
+    component: &Component,
     cfg: &ConditionalColour<f32>,
     align_length: usize,
 ) -> String {
-    let coloured_temp = cmpt
+    let coloured_temp = component
         .temperature()
         .to_string()
-        .color(select_colour_number(cmpt.temperature(), cfg));
+        .color(select_colour_number(component.temperature(), cfg));
     format!(
-        "   {:.<algn$}: {}°C",
-        cmpt.label(),
+        "    {:.<algn$}: {}°C",
+        component.label(),
         coloured_temp,
         algn = align_length
     )

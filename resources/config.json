@@ -65,5 +65,24 @@
                 "colour": "Red"
             }
         ]
+    },
+    "services": {
+        "docker": {
+            "memory_usage": {
+                "default_colour": "White",
+                "levels": [
+                    {
+                        "min": 2000,
+                        "colour": "Yellow"
+                    },
+                    {
+                        "min": 2400,
+                        "colour": "Red"
+                    }
+                ]
+            }
+        },
+        "ntp": {},
+        "ufw": {}
     }
 }
