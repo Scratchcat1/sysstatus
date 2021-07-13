@@ -40,17 +40,22 @@
             ]
         }
     },
-    "storage_usage": {
-        "default_colour": "Green",
-        "levels": [
-            {
-                "min": 0.8,
-                "colour": "Yellow"
-            },
-            {
-                "min": 0.9,
-                "colour": "Red"
-            }
+    "storage": {
+        "usage_colouring": {
+            "default_colour": "Green",
+            "levels": [
+                {
+                    "min": 0.8,
+                    "colour": "Yellow"
+                },
+                {
+                    "min": 0.9,
+                    "colour": "Red"
+                }
+            ]
+        },
+        "exclude_prefixes": [
+            "/var/lib/docker/"
         ]
     },
     "temperature": {

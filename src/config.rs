@@ -5,7 +5,7 @@ use std::collections::HashMap;
 #[derive(Debug, Deserialize)]
 pub struct SysStatusConfig {
     pub general_info: GeneralInfoConfig,
-    pub storage_usage: ConditionalColour<f32>,
+    pub storage: StorageConfig,
     pub temperature: ConditionalColour<f32>,
     pub services: HashMap<String, ServiceConfig>,
 }
@@ -15,6 +15,12 @@ pub struct GeneralInfoConfig {
     pub load_avg: ConditionalColour<f64>,
     pub free_memory: ConditionalColour<f32>,
     pub cpu_frequency: ConditionalColour<u64>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct StorageConfig {
+    pub usage_colouring: ConditionalColour<f32>,
+    pub exclude_prefixes: Vec<String>,
 }
 
 #[derive(Debug, Deserialize)]

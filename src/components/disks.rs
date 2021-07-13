@@ -1,4 +1,4 @@
-use crate::config::ConditionalColour;
+use crate::config::{ConditionalColour, StorageConfig};
 use crate::util::select_colour_number;
 use bytesize::ByteSize;
 use colored::*;
@@ -38,12 +38,18 @@ pub fn single_disk(disk: &Disk, cfg: &ConditionalColour<f32>) -> String {
     )
 }
 
-pub fn disks(sys: &mut System, cfg: &ConditionalColour<f32>) -> String {
+pub fn disks(sys: &mut System, cfg: &StorageConfig) -> String {
     sys.refresh_disks_list();
 
     sys.disks()
         .iter()
-        .map(|disk| single_disk(&disk, cfg))
+        .filter(|disk| {
+            let path = disk.mount_point().to_string_lossy();
+            !cfg.exclude_prefixes
+                .iter()
+                .any(|prefix| path.starts_with(prefix))
+        })
+        .map(|disk| single_disk(&disk, &cfg.usage_colouring))
         .collect::<Vec<String>>()
         .join("\n")
 }

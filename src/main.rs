@@ -37,7 +37,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     );
     println!(
         "Disks:\n{}\n",
-        components::disks::disks(&mut sys, &cfg.storage_usage)
+        components::disks::disks(&mut sys, &cfg.storage)
     );
     println!(
         "Temperatures:\n{}\n",
