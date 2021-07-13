@@ -24,7 +24,7 @@ pub fn print_row<'a>(
             .zip(column_sizes.into_iter())
             .map(|(name, size)| format!("{: <size$}", name, size = size))
             .collect::<Vec<String>>()
-            .join(&"|")
+            .join(&"  ")
     );
 }
 

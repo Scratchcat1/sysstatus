@@ -41,13 +41,14 @@ fn parse_entry<'a>(service_name: &'a str, status_output: &'a str) -> Entry<'a> {
     }
 }
 
-pub fn format_service_state(active_state: &str, sub_state: &str, cfg: &ServiceConfig) -> String {
+pub fn format_service_state(active_state: &str, sub_state: &str, width: usize) -> String {
     let state_color = match (active_state, sub_state) {
         ("active", "running") => Color::Green,
         _ => Color::Yellow,
     };
 
-    format!("{} ({})", active_state, sub_state)
+    let state = format!("{} ({})", active_state, sub_state);
+    format!("{: <size$}", state, size = width)
         .color(state_color)
         .to_string()
 }
@@ -104,12 +105,6 @@ pub fn print_services(cfg: &HashMap<String, ServiceConfig>) {
     let column_widths = util::column_widths(
         &header,
         entries.iter().map(|entry| {
-            println!(
-                "{} {} {}",
-                entry.active_state.len(),
-                entry.sub_state.len(),
-                entry.active_state.len() + entry.sub_state.len() + 3
-            );
             vec![
                 entry.service_name.len(),
                 entry.active_state.len() + entry.sub_state.len() + 3,
@@ -121,7 +116,6 @@ pub fn print_services(cfg: &HashMap<String, ServiceConfig>) {
             ]
         }),
     );
-    println!("{:?}", column_widths);
 
     util::print_row(header, &column_widths);
     entries.iter().for_each(|entry| {
@@ -131,7 +125,7 @@ pub fn print_services(cfg: &HashMap<String, ServiceConfig>) {
         util::print_row(
             [
                 entry.service_name,
-                &format_service_state(entry.active_state, entry.sub_state, service_cfg),
+                &format_service_state(entry.active_state, entry.sub_state, column_widths[1]),
                 &format_mem_current(&entry.mem_current, service_cfg),
             ],
             &column_widths,
