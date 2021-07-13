@@ -9,11 +9,12 @@ use std::str;
 #[derive(Debug, Default)]
 struct Entry<'a> {
     service_name: &'a str,
-    state: String,
-    mem_current: String,
+    active_state: &'a str,
+    sub_state: &'a str,
+    mem_current: Option<ByteSize>,
 }
 
-fn parse_entry<'a>(service_name: &'a str, status_output: &str, cfg: &ServiceConfig) -> Entry<'a> {
+fn parse_entry<'a>(service_name: &'a str, status_output: &'a str) -> Entry<'a> {
     let mut active_state = None;
     let mut sub_state = None;
     let mut mem_current = None;
@@ -32,34 +33,37 @@ fn parse_entry<'a>(service_name: &'a str, status_output: &str, cfg: &ServiceConf
     }
     assert!(id.expect("No service Id").contains(service_name));
 
+    Entry {
+        service_name,
+        active_state: active_state.unwrap_or("Unknown active state"),
+        sub_state: sub_state.unwrap_or("Unknown sub state"),
+        mem_current: mem_current,
+    }
+}
+
+pub fn format_service_state(active_state: &str, sub_state: &str, cfg: &ServiceConfig) -> String {
+    let state_color = match (active_state, sub_state) {
+        ("active", "running") => Color::Green,
+        _ => Color::Yellow,
+    };
+
+    format!("{} ({})", active_state, sub_state)
+        .color(state_color)
+        .to_string()
+}
+
+pub fn format_mem_current(mem_current: &Option<ByteSize>, cfg: &ServiceConfig) -> String {
     let mem_colour = match (&cfg.memory_usage, mem_current) {
         (Some(mem_usage_cond), Some(mem_current)) => {
             util::select_colour_number(mem_current.as_u64(), mem_usage_cond)
         }
         _ => Color::White,
     };
-
-    let state_color = match (active_state, sub_state) {
-        (Some("active"), Some("running")) => Color::Green,
-        _ => Color::Yellow,
-    };
-
-    let coloured_state = format!(
-        "{} ({})",
-        active_state.unwrap_or("Unknown active state"),
-        sub_state.unwrap_or("Unknown sub state")
-    )
-    .color(state_color);
-
-    Entry {
-        service_name,
-        state: coloured_state.to_string(),
-        mem_current: mem_current
-            .unwrap_or(ByteSize::b(0))
-            .to_string()
-            .color(mem_colour)
-            .to_string(),
-    }
+    mem_current
+        .unwrap_or(ByteSize::b(0))
+        .to_string()
+        .color(mem_colour)
+        .to_string()
 }
 
 pub fn systemd_show(service_names: &[&str]) -> String {
@@ -90,30 +94,46 @@ pub fn print_services(cfg: &HashMap<String, ServiceConfig>) {
     let entries = &ordered_service_names
         .iter()
         .map(|service_name| {
-            let service_cfg = cfg
-                .get(*service_name)
-                .expect("Cannot find value for key in hashmap");
             let service_status = service_statuses
                 .next()
                 .expect("Subcommand returned the incorrect number of services");
-            parse_entry(service_name, service_status, service_cfg)
+            parse_entry(service_name, service_status)
         })
         .collect::<Vec<Entry>>();
 
     let column_widths = util::column_widths(
         &header,
         entries.iter().map(|entry| {
+            println!(
+                "{} {} {}",
+                entry.active_state.len(),
+                entry.sub_state.len(),
+                entry.active_state.len() + entry.sub_state.len() + 3
+            );
             vec![
                 entry.service_name.len(),
-                entry.state.len(),
-                entry.mem_current.len(),
+                entry.active_state.len() + entry.sub_state.len() + 3,
+                entry
+                    .mem_current
+                    .unwrap_or(ByteSize::b(0))
+                    .to_string()
+                    .len(),
             ]
         }),
     );
+    println!("{:?}", column_widths);
 
+    util::print_row(header, &column_widths);
     entries.iter().for_each(|entry| {
+        let service_cfg = cfg
+            .get(entry.service_name)
+            .expect("Cannot find value for key in hashmap");
         util::print_row(
-            [entry.service_name, &entry.state, &entry.mem_current],
+            [
+                entry.service_name,
+                &format_service_state(entry.active_state, entry.sub_state, service_cfg),
+                &format_mem_current(&entry.mem_current, service_cfg),
+            ],
             &column_widths,
         );
     });
