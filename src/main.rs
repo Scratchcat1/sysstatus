@@ -35,10 +35,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         "{}",
         components::general_info::general_info(&mut sys, &cfg.general_info)
     );
-    println!(
-        "Disks:\n{}\n",
-        components::disks::disks(&mut sys, &cfg.storage)
-    );
+
+    components::disks::print_disks(&mut sys, &cfg.storage);
     println!(
         "Temperatures:\n{}\n",
         components::temperature::temperature(&mut sys, &cfg.temperature)

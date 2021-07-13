@@ -51,18 +51,15 @@ pub fn cpu(sys: &mut System, cfg: &GeneralInfoConfig) -> String {
 }
 
 pub fn uptime(sys: &mut System) -> String {
-    let up_seconds = sys.uptime();
-    let seconds = up_seconds % 60;
-    let up_minutes = up_seconds / 60;
-    let minutes = up_minutes % 60;
-    let up_hours = up_minutes / 60;
-    let hours = up_hours % 24;
-    let up_days = up_hours / 24;
-    let days = up_days % 7;
-    let up_weeks = up_days / 7;
+    let uptime = sys.uptime();
+    let seconds = uptime % 60;
+    let minutes = (uptime / 60) % 60;
+    let hours = (uptime / (60 * 60)) % 24;
+    let days = (uptime / (24 * 60 * 60)) % 7;
+    let weeks = uptime / (24 * 60 * 60 * 7);
     format!(
         "{} weeks, {} days, {} hours, {} minutes, {} seconds",
-        up_weeks, days, hours, minutes, seconds
+        weeks, days, hours, minutes, seconds
     )
 }
 
