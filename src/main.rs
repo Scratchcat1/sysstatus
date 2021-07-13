@@ -41,9 +41,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         "Temperatures:\n{}\n",
         components::temperature::temperature(&mut sys, &cfg.temperature)
     );
-    println!(
-        "Services:\n{}\n",
-        components::services::services(&cfg.services)
-    );
+
+    // "Services:\n{}\n",
+    components::services::print_services(&cfg.services);
     Ok(())
 }

@@ -1,23 +1,25 @@
 use crate::config::ServiceConfig;
-use crate::util::select_colour_number;
+use crate::util;
 use bytesize::ByteSize;
 use colored::*;
 use std::collections::HashMap;
 use std::process::Command;
 use std::str;
 
-pub fn single_service(
-    service_name: &str,
-    service_status: &str,
-    cfg: &ServiceConfig,
-    service_name_align: usize,
-) -> String {
+#[derive(Debug, Default)]
+struct Entry<'a> {
+    service_name: &'a str,
+    state: String,
+    mem_current: String,
+}
+
+fn parse_entry<'a>(service_name: &'a str, status_output: &str, cfg: &ServiceConfig) -> Entry<'a> {
     let mut active_state = None;
     let mut sub_state = None;
     let mut mem_current = None;
     let mut id = None;
 
-    for line in service_status.split("\n") {
+    for line in status_output.split("\n") {
         if let Some(new_active_state) = line.strip_prefix("ActiveState=") {
             active_state = Some(new_active_state);
         } else if let Some(new_sub_state) = line.strip_prefix("SubState=") {
@@ -32,7 +34,7 @@ pub fn single_service(
 
     let mem_colour = match (&cfg.memory_usage, mem_current) {
         (Some(mem_usage_cond), Some(mem_current)) => {
-            select_colour_number(mem_current.as_u64(), mem_usage_cond)
+            util::select_colour_number(mem_current.as_u64(), mem_usage_cond)
         }
         _ => Color::White,
     };
@@ -49,39 +51,43 @@ pub fn single_service(
     )
     .color(state_color);
 
-    format!(
-        "    {:.<align$}: {:<18} Mem: {}",
+    Entry {
         service_name,
-        coloured_state,
-        mem_current
+        state: coloured_state.to_string(),
+        mem_current: mem_current
             .unwrap_or(ByteSize::b(0))
             .to_string()
-            .color(mem_colour),
-        align = service_name_align + 3
-    )
+            .color(mem_colour)
+            .to_string(),
+    }
 }
 
-pub fn services(cfg: &HashMap<String, ServiceConfig>) -> String {
-    let mut service_name_align = 0;
+pub fn systemd_show(service_names: &[&str]) -> String {
     let mut command = Command::new("systemctl");
     command.arg("show");
 
-    let mut ordered_service_names = cfg.keys().collect::<Vec<&String>>();
-    ordered_service_names.sort();
-    for service_name in &ordered_service_names {
-        service_name_align = service_name_align.max(service_name.len());
+    for service_name in service_names {
         command.arg(service_name);
     }
     let raw_output = command.output().expect("failed to execute process");
-    let output = match str::from_utf8(&raw_output.stdout) {
+    let output = match String::from_utf8(raw_output.stdout) {
         Ok(v) => v,
         Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
     };
+    output
+}
+
+pub fn print_services(cfg: &HashMap<String, ServiceConfig>) {
+    let header = ["Service", "Status", "Memory Usage"];
+
+    let mut ordered_service_names = cfg.keys().map(|name| name.as_str()).collect::<Vec<&str>>();
+    ordered_service_names.sort();
 
     // Service outputs are separated by a single blank line/two consecutive newlines
-    let mut service_statuses = output.split("\n\n");
+    let systemd_show_output = systemd_show(&ordered_service_names);
+    let mut service_statuses = systemd_show_output.split("\n\n");
 
-    ordered_service_names
+    let entries = &ordered_service_names
         .iter()
         .map(|service_name| {
             let service_cfg = cfg
@@ -90,13 +96,25 @@ pub fn services(cfg: &HashMap<String, ServiceConfig>) -> String {
             let service_status = service_statuses
                 .next()
                 .expect("Subcommand returned the incorrect number of services");
-            single_service(
-                service_name,
-                service_status,
-                service_cfg,
-                service_name_align,
-            )
+            parse_entry(service_name, service_status, service_cfg)
         })
-        .collect::<Vec<String>>()
-        .join("\n")
+        .collect::<Vec<Entry>>();
+
+    let column_widths = util::column_widths(
+        &header,
+        entries.iter().map(|entry| {
+            vec![
+                entry.service_name.len(),
+                entry.state.len(),
+                entry.mem_current.len(),
+            ]
+        }),
+    );
+
+    entries.iter().for_each(|entry| {
+        util::print_row(
+            [entry.service_name, &entry.state, &entry.mem_current],
+            &column_widths,
+        );
+    });
 }

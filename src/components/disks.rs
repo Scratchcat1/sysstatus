@@ -1,9 +1,7 @@
 use crate::config::{ConditionalColour, StorageConfig};
-use crate::util::select_colour_number;
+use crate::util;
 use bytesize::ByteSize;
 use colored::*;
-use std::cmp;
-use std::iter;
 use std::str;
 use sysinfo::{Disk, DiskExt, DiskType};
 use sysinfo::{System, SystemExt};
@@ -53,23 +51,8 @@ fn print_entry_bar(entry: &Entry, bar_width: usize, cfg: &ConditionalColour<f32>
     println!(
         "    [{}{}]",
         "=".repeat(used_bar_width)
-            .color(select_colour_number(used_ratio, cfg)),
+            .color(util::select_colour_number(used_ratio, cfg)),
         "=".repeat(bar_width - used_bar_width)
-    );
-}
-
-fn print_row<'a>(
-    items_iter: impl IntoIterator<Item = &'a str>,
-    column_sizes: impl IntoIterator<Item = &'a usize>,
-) {
-    println!(
-        "{}",
-        items_iter
-            .into_iter()
-            .zip(column_sizes.into_iter())
-            .map(|(name, size)| format!("{: <size$}", name, size = size))
-            .collect::<Vec<String>>()
-            .join(&"  ")
     );
 }
 
@@ -90,9 +73,9 @@ pub fn print_disks(sys: &mut System, cfg: &StorageConfig) {
         .map(|disk| entry(&disk))
         .collect::<Vec<Entry>>();
 
-    let column_widths = entries
-        .iter()
-        .map(|entry| {
+    let column_widths = util::column_widths(
+        &header,
+        entries.iter().map(|entry| {
             vec![
                 entry.mount_point.len(),
                 entry.disk_type.len(),
@@ -101,19 +84,13 @@ pub fn print_disks(sys: &mut System, cfg: &StorageConfig) {
                 entry.used.to_string().len(),
                 entry.total.to_string().len(),
             ]
-        })
-        .chain(iter::once(header.iter().map(|x| x.len()).collect()))
-        .fold(vec![0; header.len()], |acc, x| {
-            x.iter()
-                .zip(acc.iter())
-                .map(|(a, b)| cmp::max(a, &b).to_owned())
-                .collect()
-        });
+        }),
+    );
     let bar_width = column_widths.iter().sum::<usize>() + (header.len() - 2);
 
-    print_row(header, &column_widths);
+    util::print_row(header, &column_widths);
     entries.iter().for_each(|entry| {
-        print_row(
+        util::print_row(
             [
                 entry.mount_point,
                 entry.disk_type,
