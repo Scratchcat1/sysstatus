@@ -16,9 +16,11 @@ pub fn select_colour_number<T: PartialOrd>(val: T, cond_colour: &ConditionalColo
 pub fn print_row<'a>(
     items_iter: impl IntoIterator<Item = &'a str>,
     column_sizes: impl IntoIterator<Item = &'a usize>,
+    prefix: Option<&str>,
 ) {
     println!(
-        "{}",
+        "{}{}",
+        prefix.unwrap_or(""),
         items_iter
             .into_iter()
             .zip(column_sizes.into_iter())

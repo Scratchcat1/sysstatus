@@ -45,18 +45,24 @@ fn entry<'a>(disk: &'a Disk) -> Entry<'a> {
     }
 }
 
-fn print_entry_bar(entry: &Entry, bar_width: usize, cfg: &ConditionalColour<f32>) {
+fn print_entry_bar(
+    entry: &Entry,
+    bar_width: usize,
+    cfg: &ConditionalColour<f32>,
+    indent: Option<&str>,
+) {
     let used_ratio = entry.used.as_u64() as f32 / entry.total.as_u64() as f32;
     let used_bar_width = (used_ratio * bar_width as f32) as usize;
     println!(
-        "    [{}{}]",
+        "{}[{}{}]",
+        indent.unwrap_or(""),
         "=".repeat(used_bar_width)
             .color(util::select_colour_number(used_ratio, cfg)),
         "=".repeat(bar_width - used_bar_width)
     );
 }
 
-pub fn print_disks(sys: &mut System, cfg: &StorageConfig) {
+pub fn print_disks(sys: &mut System, cfg: &StorageConfig, indent: &str) {
     let header = ["Mount", "Type", "Filesystem", "Used(%)", "Used", "Total"];
 
     sys.refresh_disks_list();
@@ -86,9 +92,10 @@ pub fn print_disks(sys: &mut System, cfg: &StorageConfig) {
             ]
         }),
     );
-    let bar_width = column_widths.iter().sum::<usize>() + (header.len() - 2);
+    let bar_width = column_widths.iter().sum::<usize>() + column_widths.len() * 2;
 
-    util::print_row(header, &column_widths);
+    println!("Disks:");
+    util::print_row(header, &column_widths, Some(indent));
     entries.iter().for_each(|entry| {
         util::print_row(
             [
@@ -100,7 +107,8 @@ pub fn print_disks(sys: &mut System, cfg: &StorageConfig) {
                 &entry.total.to_string(),
             ],
             &column_widths,
+            Some(indent),
         );
-        print_entry_bar(&entry, bar_width, &cfg.usage_colouring);
+        print_entry_bar(&entry, bar_width, &cfg.usage_colouring, Some(indent));
     });
 }

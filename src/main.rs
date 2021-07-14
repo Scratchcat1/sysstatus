@@ -30,19 +30,21 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let cfg = load_config_from_json(&args.config_file_path)?;
     let mut sys = System::new();
+    let indent = "  ";
 
     println!(
         "{}",
         components::general_info::general_info(&mut sys, &cfg.general_info)
     );
 
-    components::disks::print_disks(&mut sys, &cfg.storage);
+    components::disks::print_disks(&mut sys, &cfg.storage, indent);
     println!(
         "Temperatures:\n{}\n",
         components::temperature::temperature(&mut sys, &cfg.temperature)
     );
 
     // "Services:\n{}\n",
-    components::services::print_services(&cfg.services);
+    components::services::print_services(&cfg.services, indent);
+    components::last_login::print_last_login(&cfg.last_login, indent);
     Ok(())
 }

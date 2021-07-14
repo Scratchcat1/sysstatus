@@ -4,7 +4,6 @@ use bytesize::ByteSize;
 use colored::*;
 use std::collections::HashMap;
 use std::process::Command;
-use std::str;
 
 #[derive(Debug, Default)]
 struct Entry<'a> {
@@ -82,7 +81,7 @@ pub fn systemd_show(service_names: &[&str]) -> String {
     output
 }
 
-pub fn print_services(cfg: &HashMap<String, ServiceConfig>) {
+pub fn print_services(cfg: &HashMap<String, ServiceConfig>, indent: &str) {
     let header = ["Service", "Status", "Memory Usage"];
 
     let mut ordered_service_names = cfg.keys().map(|name| name.as_str()).collect::<Vec<&str>>();
@@ -117,7 +116,8 @@ pub fn print_services(cfg: &HashMap<String, ServiceConfig>) {
         }),
     );
 
-    util::print_row(header, &column_widths);
+    println!("System services:");
+    util::print_row(header, &column_widths, Some(indent));
     entries.iter().for_each(|entry| {
         let service_cfg = cfg
             .get(entry.service_name)
@@ -129,6 +129,7 @@ pub fn print_services(cfg: &HashMap<String, ServiceConfig>) {
                 &format_mem_current(&entry.mem_current, service_cfg),
             ],
             &column_widths,
+            Some(indent),
         );
     });
 }

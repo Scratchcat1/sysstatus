@@ -89,5 +89,11 @@
         },
         "ntp": {},
         "ufw": {}
+    },
+    "last_login": {
+        "users": {
+            "connor": 4,
+            "root": 4
+        }
     }
 }

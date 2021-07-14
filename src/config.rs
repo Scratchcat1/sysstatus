@@ -8,6 +8,7 @@ pub struct SysStatusConfig {
     pub storage: StorageConfig,
     pub temperature: ConditionalColour<f32>,
     pub services: HashMap<String, ServiceConfig>,
+    pub last_login: LastLoginConfig,
 }
 
 #[derive(Debug, Deserialize)]
@@ -26,6 +27,12 @@ pub struct StorageConfig {
 #[derive(Debug, Deserialize)]
 pub struct ServiceConfig {
     pub memory_usage: Option<ConditionalColour<u64>>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct LastLoginConfig {
+    pub since: Option<String>,
+    pub users: HashMap<String, usize>,
 }
 
 #[derive(Debug, Deserialize)]
