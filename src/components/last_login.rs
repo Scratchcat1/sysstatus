@@ -1,5 +1,6 @@
 use crate::config::LastLoginConfig;
 use crate::util;
+use colored::Color;
 use lazy_regex::regex;
 use std::process::Command;
 
@@ -32,7 +33,7 @@ fn user_last_logins_output(username: &str, max_lines: usize, since: Option<&Stri
     let mut command = Command::new("last");
     command
         .arg("--ip")
-        .arg("--time-format=iso")
+        .arg("--time-format=full")
         .arg("--limit")
         .arg(max_lines.to_string());
     since.map(|since| {
@@ -45,6 +46,13 @@ fn user_last_logins_output(username: &str, max_lines: usize, since: Option<&Stri
         Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
     };
     output
+}
+
+fn end_time_colour(end_time: &str) -> Option<Color> {
+    match end_time {
+        "still logged in" => Some(Color::Green),
+        _ => None,
+    }
 }
 
 pub fn print_last_login(cfg: &LastLoginConfig, indent: &str) {
@@ -72,7 +80,7 @@ pub fn print_last_login(cfg: &LastLoginConfig, indent: &str) {
     println!("Logins:");
     util::print_row(header, &column_widths, Some(indent));
     entries.iter().for_each(|entry| {
-        util::print_row(
+        let formatted_cells = util::format_width(
             [
                 entry.username.as_str(),
                 entry.location.as_str(),
@@ -80,7 +88,8 @@ pub fn print_last_login(cfg: &LastLoginConfig, indent: &str) {
                 entry.end_time.as_str(),
             ],
             &column_widths,
-            Some(indent),
         );
+        let colours = [None, None, None, end_time_colour(&entry.end_time)];
+        util::print_row_colour(formatted_cells, colours, Some(indent))
     });
 }

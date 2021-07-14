@@ -1,5 +1,5 @@
 use crate::config::ConditionalColour;
-use colored::Color;
+use colored::{Color, Colorize};
 use std::{cmp, iter};
 
 pub fn select_colour_number<T: PartialOrd>(val: T, cond_colour: &ConditionalColour<T>) -> Color {
@@ -25,6 +25,37 @@ pub fn print_row<'a>(
             .into_iter()
             .zip(column_sizes.into_iter())
             .map(|(name, size)| format!("{: <size$}", name, size = size))
+            .collect::<Vec<String>>()
+            .join(&"  ")
+    );
+}
+
+pub fn format_width<'a>(
+    items_iter: impl IntoIterator<Item = &'a str>,
+    column_sizes: impl IntoIterator<Item = &'a usize>,
+) -> Vec<String> {
+    items_iter
+        .into_iter()
+        .zip(column_sizes.into_iter())
+        .map(|(name, size)| format!("{: <size$}", name, size = size))
+        .collect::<Vec<String>>()
+}
+
+pub fn print_row_colour<'a>(
+    items_iter: impl IntoIterator<Item = String>,
+    colours_iter: impl IntoIterator<Item = Option<Color>>,
+    prefix: Option<&str>,
+) {
+    println!(
+        "{}{}",
+        prefix.unwrap_or(""),
+        items_iter
+            .into_iter()
+            .zip(colours_iter.into_iter())
+            .map(|(name, colour)| match colour {
+                Some(colour) => name.color(colour).to_string(),
+                None => name,
+            })
             .collect::<Vec<String>>()
             .join(&"  ")
     );
