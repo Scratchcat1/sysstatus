@@ -1,6 +1,8 @@
 # sysstatus
 A small fast tool to get an overview of system state
 
+![Example Output of sysstatus](resources/example_output.png)
+
 ## Installation
 ### Source
 - Clone the repository `git clone git@github.com:scratchcat1/sysstatus.git`
