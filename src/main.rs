@@ -30,7 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let cfg = load_config_from_json(&args.config_file_path)?;
     let mut sys = System::new();
-    let indent = "  ";
+    let indent = "    ";
 
     println!(
         "{}",
