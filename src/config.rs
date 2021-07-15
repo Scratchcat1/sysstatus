@@ -2,6 +2,7 @@ use colored::Color;
 use serde::Deserialize;
 use std::collections::HashMap;
 
+/// Configuration struct for the program
 #[derive(Debug, Deserialize)]
 pub struct SysStatusConfig {
     /// Configuration for the general section.
@@ -64,26 +65,66 @@ pub struct LastLoginConfig {
     /// Accepts any value which `last --since` accepts e.g. `+5days`, `yesterday`.
     pub since: Option<String>,
 
+    /// Mapping of usernames to fetch the last logins for to the configuration for that user's last login.
     pub users: HashMap<String, UserLastLoginConfig>,
 }
 
+/// Configuration for the user's last login.
 #[derive(Debug, Deserialize)]
 pub struct UserLastLoginConfig {
+    /// Optionally set the colour of the username.
     #[serde(default, with = "opt_color")]
     pub username_colour: Option<Color>,
+
+    /// Optionally limit the maximum number of logins shown of the user.
     pub max_lines: Option<usize>,
 }
 
+/// Select a colour by comparing the comparison value to the minimum value for each colouring level in order
+/// and selecting the last colour passing the comparison.
+///
+/// # Examples
+/// ```
+/// let cc = ConditionalColour {
+///     default_colour: Color::White,
+///     levels: vec![
+///         ColouringLevel {
+///             min: 1,
+///             colour: Color::Green,
+///         },
+///         ColouringLevel {
+///             min: 5,
+///             colour: Color::Yellow,
+///         },
+///         ColouringLevel {
+///             min: 10,
+///             colour: Color::Red,
+///         },
+///     ],
+/// };
+/// assert_eq!(util::select_colour_number(0, &cc), Color::White);
+/// assert_eq!(util::select_colour_number(1, &cc), Color::Green);
+/// assert_eq!(util::select_colour_number(4, &cc), Color::Green);
+/// assert_eq!(util::select_colour_number(5, &cc), Color::Yellow);
+/// assert_eq!(util::select_colour_number(9, &cc), Color::Yellow);
+/// assert_eq!(util::select_colour_number(10, &cc), Color::Red);
+/// ```
 #[derive(Debug, Deserialize)]
 pub struct ConditionalColour<T: PartialOrd> {
+    /// The default colour to use if the comparison value is less than the minimum of the first level.
     #[serde(with = "LocalColor")]
     pub default_colour: Color,
+    /// An list of colouring levels to check in order
     pub levels: Vec<ColouringLevel<T>>,
 }
 
+/// Struct used as part of the `ConditionalColour` struct to decide which `colour` to use when the comparison
+/// value exceeds `min`.
 #[derive(Debug, Deserialize)]
 pub struct ColouringLevel<T: PartialOrd> {
+    /// The minimum value the comparison value should reach before this colour is used.
     pub min: T,
+    /// The colour to use.
     #[serde(with = "LocalColor")]
     pub colour: Color,
 }
@@ -113,6 +154,9 @@ pub enum LocalColor {
     TrueColor { r: u8, g: u8, b: u8 },
 }
 
+/// Module handling serde deserialization of Option<Color>.
+///
+/// Required as serde remote doesn't work with `Option`s.
 mod opt_color {
     use super::LocalColor;
     use colored::Color;

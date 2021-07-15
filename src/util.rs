@@ -72,3 +72,38 @@ pub fn column_widths<'a>(header: &[&str], entries: impl Iterator<Item = Vec<usiz
                 .collect()
         })
 }
+
+#[cfg(test)]
+mod test {
+    use crate::config::ColouringLevel;
+    use crate::config::ConditionalColour;
+    use crate::util;
+    use colored::Color;
+
+    #[test]
+    fn test_select_colour_number() {
+        let cc = ConditionalColour {
+            default_colour: Color::White,
+            levels: vec![
+                ColouringLevel {
+                    min: 1,
+                    colour: Color::Green,
+                },
+                ColouringLevel {
+                    min: 5,
+                    colour: Color::Yellow,
+                },
+                ColouringLevel {
+                    min: 10,
+                    colour: Color::Red,
+                },
+            ],
+        };
+        assert_eq!(util::select_colour_number(0, &cc), Color::White);
+        assert_eq!(util::select_colour_number(1, &cc), Color::Green);
+        assert_eq!(util::select_colour_number(4, &cc), Color::Green);
+        assert_eq!(util::select_colour_number(5, &cc), Color::Yellow);
+        assert_eq!(util::select_colour_number(9, &cc), Color::Yellow);
+        assert_eq!(util::select_colour_number(10, &cc), Color::Red);
+    }
+}
