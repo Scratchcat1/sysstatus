@@ -187,3 +187,10 @@ In the example:
     }
 }
 ```
+
+## Alternatives
+- [motd](https://github.com/yboetz/motd) - "Collection of my 'Message of the Day' scripts" by yboetz
+- [rust-motd](https://github.com/rust-motd/rust-motd) - "Beautiful, useful MOTD generation with zero runtime dependencies" by rust-motd
+
+## Acknowledgements
+This program is partly derived from `rust-motd` particularly in regards to formatting and handling last login parsing.
