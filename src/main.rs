@@ -1,7 +1,6 @@
-use serde_json;
 use std::error::Error;
 use std::fs::File;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use structopt::StructOpt;
 use sysinfo::{System, SystemExt};
 
@@ -18,10 +17,11 @@ struct Cli {
     config_file_path: PathBuf,
 }
 
-pub fn load_config_from_json(path: &PathBuf) -> Result<SysStatusConfig, Box<dyn Error>> {
-    let f = File::open(path).expect("Configuration file not found");
+pub fn load_config_from_json(path: &Path) -> Result<SysStatusConfig, Box<dyn Error>> {
+    let f = File::open(path)
+        .expect(format!("Configuration file {} not found", path.to_string_lossy()).as_str());
     let pimon_config: SysStatusConfig = serde_json::from_reader(&f)?;
-    Ok(SysStatusConfig::from(pimon_config))
+    Ok(pimon_config)
 }
 
 fn main() -> Result<(), Box<dyn Error>> {

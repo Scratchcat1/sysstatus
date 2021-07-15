@@ -41,7 +41,7 @@ pub fn format_width<'a>(
         .collect::<Vec<String>>()
 }
 
-pub fn print_row_colour<'a>(
+pub fn print_row_colour(
     items_iter: impl IntoIterator<Item = String>,
     colours_iter: impl IntoIterator<Item = Option<Color>>,
     prefix: Option<&str>,
@@ -61,7 +61,7 @@ pub fn print_row_colour<'a>(
     );
 }
 
-pub fn column_widths<'a>(header: &[&str], entries: impl Iterator<Item = Vec<usize>>) -> Vec<usize> {
+pub fn column_widths(header: &[&str], entries: impl Iterator<Item = Vec<usize>>) -> Vec<usize> {
     entries
         .into_iter()
         .chain(iter::once(header.iter().map(|x| x.len()).collect()))

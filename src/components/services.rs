@@ -36,7 +36,7 @@ fn parse_entry<'a>(service_name: &'a str, status_output: &'a str) -> Entry<'a> {
         service_name,
         active_state: active_state.unwrap_or("Unknown active state"),
         sub_state: sub_state.unwrap_or("Unknown sub state"),
-        mem_current: mem_current,
+        mem_current,
     }
 }
 

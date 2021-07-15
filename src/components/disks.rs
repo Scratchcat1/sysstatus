@@ -16,7 +16,7 @@ struct Entry<'a> {
     total: ByteSize,
 }
 
-fn entry<'a>(disk: &'a Disk) -> Entry<'a> {
+fn entry(disk: &Disk) -> Entry {
     let used = ByteSize::b(disk.total_space() - disk.available_space());
     let total = ByteSize::b(disk.total_space());
     let used_percent = (100 * used.as_u64()) / total.as_u64();

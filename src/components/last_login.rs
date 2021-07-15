@@ -12,7 +12,7 @@ struct Entry {
     end_time: String,
 }
 
-fn parse_entry<'a>(line: &'a str) -> Option<Entry> {
+fn parse_entry(line: &str) -> Option<Entry> {
     let separator_regex = regex!(r"(?:\s{2,})|(?:\s-\s)");
 
     let items = separator_regex.split(line).collect::<Vec<_>>();
