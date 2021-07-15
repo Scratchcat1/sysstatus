@@ -94,7 +94,7 @@ pub fn print_disks(sys: &mut System, cfg: &StorageConfig, indent: &str) {
     );
     let bar_width = column_widths.iter().sum::<usize>() + column_widths.len() * 2;
 
-    println!("Disks:");
+    println!("Storage:");
     util::print_row(header, &column_widths, Some(indent));
     entries.iter().for_each(|entry| {
         util::print_row(

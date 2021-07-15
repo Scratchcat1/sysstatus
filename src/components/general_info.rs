@@ -65,7 +65,7 @@ pub fn uptime(sys: &mut System) -> String {
 
 pub fn general_info(sys: &mut System, cfg: &GeneralInfoConfig) -> String {
     format!(
-        "System:
+        "General:
     {:.<max$}: {}
     {:.<max$}: {}
 

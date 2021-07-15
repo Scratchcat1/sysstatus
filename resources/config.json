@@ -92,8 +92,12 @@
     },
     "last_login": {
         "users": {
-            "connor": 4,
-            "root": 4
+            "connor": {
+                "max_lines": 4
+            },
+            "root": {
+                "username_colour": "Red"
+            }
         }
     }
 }

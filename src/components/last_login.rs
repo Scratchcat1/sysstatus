@@ -29,13 +29,16 @@ fn parse_entry<'a>(line: &'a str) -> Option<Entry> {
     })
 }
 
-fn user_last_logins_output(username: &str, max_lines: usize, since: Option<&String>) -> String {
+fn user_last_logins_output(
+    username: &str,
+    max_lines: Option<usize>,
+    since: Option<&String>,
+) -> String {
     let mut command = Command::new("last");
-    command
-        .arg("--ip")
-        .arg("--time-format=full")
-        .arg("--limit")
-        .arg(max_lines.to_string());
+    command.arg("--ip").arg("--time-format=full");
+    max_lines.map(|max_lines| {
+        command.arg("--limit").arg(max_lines.to_string());
+    });
     since.map(|since| {
         command.arg("--since").arg(since);
     });
@@ -59,8 +62,8 @@ pub fn print_last_login(cfg: &LastLoginConfig, indent: &str) {
     let header = ["Username", "Location", "Start", "End"];
 
     let mut entries = Vec::new();
-    for (username, max_lines) in cfg.users.iter() {
-        let output = user_last_logins_output(username, *max_lines, cfg.since.as_ref());
+    for (username, user_config) in cfg.users.iter() {
+        let output = user_last_logins_output(username, user_config.max_lines, cfg.since.as_ref());
 
         entries.extend(output.lines().flat_map(|line| parse_entry(line)));
     }
@@ -89,7 +92,16 @@ pub fn print_last_login(cfg: &LastLoginConfig, indent: &str) {
             ],
             &column_widths,
         );
-        let colours = [None, None, None, end_time_colour(&entry.end_time)];
+        let user_config = cfg
+            .users
+            .get(&entry.username)
+            .expect("Could not find config for user");
+        let colours = [
+            user_config.username_colour,
+            None,
+            None,
+            end_time_colour(&entry.end_time),
+        ];
         util::print_row_colour(formatted_cells, colours, Some(indent))
     });
 }
