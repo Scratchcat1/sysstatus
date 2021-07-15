@@ -29,7 +29,7 @@ pub struct GeneralInfoConfig {
     /// Conditionally colour the used memory value.
     /// Comparison value will be the used memory divided by the total memory for a scale from 0-1 e.g. 4GB used on a 16GB machine generates a comparison value of 0.25.
     /// This allows configurations to be machine independent while also allowing sensible colouring.
-    pub free_memory: ConditionalColour<f32>,
+    pub memory: ConditionalColour<f32>,
     /// Conditionally colour the current CPU frequency.
     /// Comparison value is the CPU frequency in MHz.
     pub cpu_frequency: ConditionalColour<u64>,

@@ -13,7 +13,7 @@
                 }
             ]
         },
-        "free_memory": {
+        "memory": {
             "default_colour": "Green",
             "levels": [
                 {
@@ -96,7 +96,13 @@
                 "max_lines": 4
             },
             "root": {
-                "username_colour": "Red"
+                "username_colour": {
+                    "TrueColor": {
+                        "r": 3,
+                        "g": 4,
+                        "b": 255
+                    }
+                }
             }
         }
     }

@@ -30,7 +30,7 @@ pub fn memory(sys: &mut System, cfg: &GeneralInfoConfig) -> String {
     let total_mem = sys.total_memory();
     let available_mem = sys.available_memory();
 
-    let colour = select_colour_number(used_mem as f32 / available_mem as f32, &cfg.free_memory);
+    let colour = select_colour_number(used_mem as f32 / available_mem as f32, &cfg.memory);
     format!(
         "{} used, {} available, {} total",
         ByteSize::kb(used_mem).to_string().color(colour),
