@@ -3,7 +3,11 @@ name = "sysstatus"
 version = "0.1.0"
 authors = ["Connor Holloway <c.holloway314@outlook.com>"]
 edition = "2018"
-
+license-file = "LICENSE"
+description = "A small fast tool to get an overview of the system including load, storage usage, temperature and services."
+repository = "https://github.com/Scratchcat1/sysstatus"
+keywords = ["cli", "utility", "command-line"]
+categories = ["command-line-utilities"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

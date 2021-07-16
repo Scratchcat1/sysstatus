@@ -1,5 +1,5 @@
 # sysstatus
-A small fast tool to get an overview of system state
+A small fast tool to get an overview of the system including load, storage usage, temperature and services.
 
 ![Example Output of sysstatus](resources/example_output.png)
 
@@ -71,7 +71,7 @@ In the example:
 ```jsonc
 {
     "general_info": {
-        /// ConditionalColour for load average. Comparison value = load / cores.
+        // ConditionalColour for load average. Comparison value = load / cores.
         "load_avg": {
             "default_colour": "Green",
             "levels": [
@@ -85,7 +85,7 @@ In the example:
                 }
             ]
         },
-        /// Conditional Colour for memory usage. Comparison value = used / total.
+        // Conditional Colour for memory usage. Comparison value = used / total.
         "memory": {
             "default_colour": "Green",
             "levels": [
@@ -99,7 +99,7 @@ In the example:
                 }
             ]
         },
-        /// ConditionalColour for CPU frequency. Comparison value = CPU frequency in MHz.
+        // ConditionalColour for CPU frequency. Comparison value = CPU frequency in MHz.
         "cpu_frequency": {
             "default_colour": "Green",
             "levels": [
@@ -115,7 +115,7 @@ In the example:
         }
     },
     "storage": {
-        /// ConditionalColour for colouring the usage bars of storage usage. Comparison value = used / total.
+        // ConditionalColour for colouring the usage bars of storage usage. Comparison value = used / total.
         "usage_colouring": {
             "default_colour": "Green",
             "levels": [
@@ -133,7 +133,7 @@ In the example:
             "/var/lib/docker/"
         ]
     },
-    /// ConditionalColour for temperature. Comparison value = temperature of component.
+    // ConditionalColour for temperature. Comparison value = temperature of component.
     "temperature": {
         "default_colour": "Green",
         "levels": [
@@ -147,11 +147,11 @@ In the example:
             }
         ]
     },
-    /// Map of service names to service configurations
-    /// The ending .service is not needed.
+    // Map of service names to service configurations
+    // The ending .service is not needed.
     "services": {
         "docker": {
-            /// ConditionalColour for memory usage of service. Comparison value = memory usage in bytes.
+            // ConditionalColour for memory usage of service. Comparison value = memory usage in bytes.
             "memory_usage": {
                 "default_colour": "White",
                 "levels": [
@@ -169,20 +169,20 @@ In the example:
         "ntp": {},
         "ufw": {}
     },
-    /// Configuration for last login section.
+    // Configuration for last login section.
     "last_login": {
-        /// Optionally only include logins which occur before a certain time.
-        /// Accepts any value which `last --since` accepts e.g. `+5days`, `yesterday`.
+        // Optionally only include logins which occur before a certain time.
+        // Accepts any value which `last --since` accepts e.g. `+5days`, `yesterday`.
         "since": "yesterday",
 
-        /// Mapping of usernames to fetch the last logins for to the configuration for that user's last login.
+        // Mapping of usernames to fetch the last logins for to the configuration for that user's last login.
         "users": {
             "connor": {
-                /// Optionally limit the maximum number of logins shown of the user.
+                // Optionally limit the maximum number of logins shown of the user.
                 "max_lines": 4
             },
             "root": {
-                /// Optionally set the colour of the username.
+                // Optionally set the colour of the username.
                 "username_colour": "Red"
             }
         }
