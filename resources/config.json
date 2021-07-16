@@ -77,25 +77,33 @@
                 "default_colour": "White",
                 "levels": [
                     {
-                        "min": 2000,
+                        "min": 10000000,
                         "colour": "Yellow"
                     },
                     {
-                        "min": 2400,
+                        "min": 50000000,
                         "colour": "Red"
                     }
                 ]
             }
         },
-        "ntp": {},
+        "ntp": {
+            "memory_usage": {
+                "default_colour": "White",
+                "levels": [
+                    {
+                        "min": 4000000,
+                        "colour": "Yellow"
+                    }
+                ]
+            }
+        },
         "ufw": {}
     },
     "last_login": {
         "users": {
-            "connor": {
-                "max_lines": 4
-            },
             "root": {
+                "max_lines": 4,
                 "username_colour": {
                     "TrueColor": {
                         "r": 3,

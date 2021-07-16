@@ -177,7 +177,7 @@ In the example:
 
         // Mapping of usernames to fetch the last logins for to the configuration for that user's last login.
         "users": {
-            "connor": {
+            "pi": {
                 // Optionally limit the maximum number of logins shown of the user.
                 "max_lines": 4
             },

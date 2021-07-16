@@ -36,13 +36,14 @@ fn user_last_logins_output(
 ) -> String {
     let mut command = Command::new("last");
     command.arg("--ip").arg("--time-format=full");
-    max_lines.map(|max_lines| {
+    if let Some(max_lines) = max_lines {
         command.arg("--limit").arg(max_lines.to_string());
-    });
-    since.map(|since| {
+    }
+    if let Some(since) = since {
         command.arg("--since").arg(since);
-    });
+    }
     command.arg(username);
+
     let raw_output = command.output().expect("failed to execute process");
     let output = match String::from_utf8(raw_output.stdout) {
         Ok(v) => v,

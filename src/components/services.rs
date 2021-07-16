@@ -19,7 +19,7 @@ fn parse_entry<'a>(service_name: &'a str, status_output: &'a str) -> Entry<'a> {
     let mut mem_current = None;
     let mut id = None;
 
-    for line in status_output.split("\n") {
+    for line in status_output.lines() {
         if let Some(new_active_state) = line.strip_prefix("ActiveState=") {
             active_state = Some(new_active_state);
         } else if let Some(new_sub_state) = line.strip_prefix("SubState=") {
