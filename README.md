@@ -27,8 +27,10 @@ OPTIONS:
 ```
 
 ## Configuration
-`sysstatus` requires a configuration file to run, by default looking for `./resources/config.json`.
+`sysstatus` requires a configuration file to run, by default looking for `$HOME/.config/sysstatus/config.json`.
 To specify a config file manually use `sysstatus -c /path/to/config.json`.
+
+A default config can be generated with `sysstatus --default-config`.
 
 ### Colors
 Colors must use values which deserialise to a `colored::Color`, see the enum [here](https://docs.rs/colored/2.0.0/colored/enum.Color.html).
