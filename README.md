@@ -13,17 +13,19 @@ A small fast tool to get an overview of the system including load, storage usage
 
 # Options
 ```
-sysstatus 0.1.0
+sysstatus 0.1.1
 
 USAGE:
-    sysstatus [OPTIONS]
+    sysstatus [FLAGS] [OPTIONS]
 
 FLAGS:
-    -h, --help       Prints help information
-    -V, --version    Prints version information
+        --default-config    Create a default config file and then exit
+    -h, --help              Prints help information
+    -V, --version           Prints version information
 
 OPTIONS:
-    -c, --config-file-path <config-file-path>    Path to configuration file [default: resources/config.json]
+    -c, --config-file-path <config-file-path>
+            Path to configuration file. Default is $HOME/.config/sysstatus/config.json
 ```
 
 ## Configuration
