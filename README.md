@@ -68,7 +68,7 @@ In the example:
 - 10.0 => Red
 
 ### Example config (with explanations)
-```json
+```jsonc
 {
     "general_info": {
         /// ConditionalColour for load average. Comparison value = load / cores.
