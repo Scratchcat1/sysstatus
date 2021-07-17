@@ -194,6 +194,15 @@ In the example:
 }
 ```
 
+## FAQ
+### Why do all my systemd services show a memory usage of 0B?
+On some systemd installations memory accounting is disabled by default. You can enable it by uncommenting or setting
+```
+DefaultMemoryAccounting=yes
+```
+in `/etc/systemd/system.conf` and then running `systemctl daemon-reexec`.  
+See this [stackoverflow question](https://askubuntu.com/questions/901075/systemctl-status-not-showing-cpu-memory-usage) for more details.
+
 ## Alternatives
 - [motd](https://github.com/yboetz/motd) - "Collection of my 'Message of the Day' scripts" by yboetz
 - [rust-motd](https://github.com/rust-motd/rust-motd) - "Beautiful, useful MOTD generation with zero runtime dependencies" by rust-motd
