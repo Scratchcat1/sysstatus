@@ -13,7 +13,7 @@ struct Entry {
 }
 
 fn parse_entry(line: &str) -> Option<Entry> {
-    let separator_regex = regex!(r"(?:\s{2,})|(?:\s-\s)");
+    let separator_regex = regex!(r"(?:\s{3,})|(?:\s-\s)");
 
     let items = separator_regex.split(line).collect::<Vec<_>>();
 
