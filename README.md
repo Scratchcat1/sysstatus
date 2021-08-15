@@ -74,6 +74,7 @@ In the example:
 ### Example config (with explanations)
 ```jsonc
 {
+    // [Optional] Configuration for general overview
     "general_info": {
         // ConditionalColour for load average. Comparison value = load / cores.
         "load_avg": {
@@ -118,6 +119,7 @@ In the example:
             ]
         }
     },
+    // [Optional] Configuration for the storage bars
     "storage": {
         // ConditionalColour for colouring the usage bars of storage usage. Comparison value = used / total.
         "usage_colouring": {
@@ -137,7 +139,7 @@ In the example:
             "/var/lib/docker/"
         ]
     },
-    // ConditionalColour for temperature. Comparison value = temperature of component.
+    // [Optional] ConditionalColour for temperature. Comparison value = temperature of component.
     "temperature": {
         "default_colour": "Green",
         "levels": [
@@ -151,7 +153,7 @@ In the example:
             }
         ]
     },
-    // Map of service names to service configurations
+    // [Optional] Map of service names to service configurations
     // The ending .service is not needed.
     "services": {
         "docker": {
@@ -173,7 +175,7 @@ In the example:
         "ntp": {},
         "ufw": {}
     },
-    // Configuration for last login section.
+    // [Optional] Configuration for last login section.
     "last_login": {
         // Optionally only include logins which occur before a certain time.
         // Accepts any value which `last --since` accepts e.g. `+5days`, `yesterday`.

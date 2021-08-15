@@ -6,17 +6,17 @@ use std::collections::HashMap;
 #[derive(Debug, Deserialize)]
 pub struct SysStatusConfig {
     /// Configuration for the general section.
-    pub general_info: GeneralInfoConfig,
+    pub general_info: Option<GeneralInfoConfig>,
     /// Configuration for the storage section.
-    pub storage: StorageConfig,
+    pub storage: Option<StorageConfig>,
     /// Configuration for the temperature section.
     /// Conditionally colours the temperatures presented.
-    pub temperature: ConditionalColour<f32>,
+    pub temperature: Option<ConditionalColour<f32>>,
     /// Configuration for the services section.
     /// Map from the service name (without a suffix of .service) to the configuration for the service.
-    pub services: HashMap<String, ServiceConfig>,
+    pub services: Option<HashMap<String, ServiceConfig>>,
     /// Configuration for the last login section.
-    pub last_login: LastLoginConfig,
+    pub last_login: Option<LastLoginConfig>,
 }
 
 /// Configuration for the general section.

@@ -89,18 +89,31 @@ fn main() {
                 Ok(cfg) => {
                     let mut sys = System::new();
                     let indent = "    ";
-                    println!(
-                        "{}",
-                        components::general_info::general_info(&mut sys, &cfg.general_info)
-                    );
-                    components::disks::print_disks(&mut sys, &cfg.storage, indent);
-                    println!(
-                        "Temperatures:\n{}\n",
-                        components::temperature::temperature(&mut sys, &cfg.temperature)
-                    );
-                    // "Services:\n{}\n",
-                    components::services::print_services(&cfg.services, indent);
-                    components::last_login::print_last_login(&cfg.last_login, indent);
+                    if let Some(general_info) = &cfg.general_info {
+                        println!(
+                            "{}",
+                            components::general_info::general_info(&mut sys, general_info)
+                        );
+                    }
+
+                    if let Some(storage) = &cfg.storage {
+                        components::disks::print_disks(&mut sys, storage, indent);
+                    }
+
+                    if let Some(temperature) = &cfg.temperature {
+                        println!(
+                            "Temperatures:\n{}\n",
+                            components::temperature::temperature(&mut sys, temperature)
+                        );
+                    }
+
+                    if let Some(services) = &cfg.services {
+                        components::services::print_services(services, indent);
+                    }
+
+                    if let Some(last_login) = &cfg.last_login {
+                        components::last_login::print_last_login(last_login, indent);
+                    }
                 }
                 Err(e) => eprintln!("Config error: {}", e),
             }
