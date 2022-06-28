@@ -2,8 +2,7 @@ use crate::config::GeneralInfoConfig;
 use crate::util::select_colour_number;
 use bytesize::ByteSize;
 use colored::*;
-use sysinfo::ProcessorExt;
-use sysinfo::{System, SystemExt};
+use sysinfo::{CpuExt, System, SystemExt};
 
 pub fn load(sys: &mut System, cfg: &GeneralInfoConfig) -> String {
     sys.refresh_cpu();
@@ -13,7 +12,7 @@ pub fn load(sys: &mut System, cfg: &GeneralInfoConfig) -> String {
         .iter()
         .map(|load| {
             load.to_string().color(select_colour_number(
-                *load / sys.processors().len() as f64,
+                *load / sys.cpus().len() as f64,
                 &cfg.load_avg,
             ))
         })
@@ -41,7 +40,7 @@ pub fn memory(sys: &mut System, cfg: &GeneralInfoConfig) -> String {
 
 pub fn cpu(sys: &mut System, cfg: &GeneralInfoConfig) -> String {
     sys.refresh_cpu();
-    let processors = sys.processors();
+    let processors = sys.cpus();
     let freq_colour = select_colour_number(processors[0].frequency(), &cfg.cpu_frequency);
     format!(
         "{} - {} MHz",
